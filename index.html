@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="icon.jpg">
+</head>
+
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="enter city name" spellcheck="false">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
+
+        <div class="weather">
+            <img src="./img/rainy-day.png" alt="Rain.png" class="weather-icon">
+            <h1><span class="temp"></span><span id="unit">°C</span></h1>
+            <h2 class="city">Aurangabad</h2>
+
+            <div class="details">
+                <div class="col">
+                    <i class="fa-solid fa-water"></i>
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <i class="fa-solid fa-wind"></i>
+                    <div>
+                        <p class="wind">15 km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+        const apiKey = "ff5a783a142012f9f03fef418fa70844";
+        const apiURL = "https://pro.openweathermap.org/data/2.5/weather?units=metric&q=";
+        let searchBox = document.querySelector(".search input");
+        let searchBtn = document.querySelector(".search button");
+        let weatherIcon = document.querySelector('.weather-icon');
+        let layout = document.querySelector(".weather");
+
+        async function getWeather(city) {
+            const response = await fetch(apiURL + city + `&APPID=${apiKey}`);
+
+            if (response.status == 404) {
+
+                document.querySelector(".error").style.display = "block";
+            }
+
+            var data = await response.json();
+            let weatherIconSet = data.weather[0].main;
+
+
+            layout.style.display = "block";
+            document.querySelector(".error").style.display = "none";
+
+            if (weatherIconSet == "Clouds") { weatherIcon.src = "./img/cloudy.png"; }
+            else if (weatherIconSet == "Rain") { weatherIcon.src = "./img/rainy-day.png"; }
+            else if (weatherIconSet == "Clear") { weatherIcon.src = "./img/sun.png"; }
+            else if (weatherIconSet == "Fog") { weatherIcon.src = "./img/fog.png"; }
+
+            console.log(data);
+
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp);
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed + "m/s";
+        }
+
+        searchBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                getWeather(searchBox.value.trim());
+            }
+        })
+
+        searchBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            getWeather(searchBox.value.trim());
+        })
+
+
+
+    </script>
+</body>
+
+</html>

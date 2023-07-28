@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weather Website</title>
+</head>
+
+<body>
+    <h1>Weather Website</h1>
+    <p>Your current city: <span id="city-name">Loading...</span></p>
+
+    <script>
+        // Function to fetch the city name using IP address
+        function getCityFromIP() {
+            fetch('https://ipinfo.io/110.226.177.1?token=d7f023f047aea0')
+                .then(response => response.json())
+                .then(data => {
+                    const city = data.city;
+                    const cityNameElement = document.getElementById('city-name');
+                    cityNameElement.textContent = city;
+                })
+                .catch(error => {
+                    console.error('Error fetching IP geolocation data:', error);
+                });
+        }
+
+        // Call the function to get the city name
+        getCityFromIP();
+    </script>
+</body>
+
+</html>
